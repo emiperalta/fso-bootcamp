@@ -40,15 +40,17 @@ const App = () => {
                 <p>No feedback given</p>
             ) : (
                 <table>
-                    <Statistics text='good' value={good} />
-                    <Statistics text='neutral' value={neutral} />
-                    <Statistics text='bad' value={bad} />
-                    <Statistics text='all' value={all} />
-                    <Statistics text='average' value={average ? average : 0} />
-                    <Statistics
-                        text='positive'
-                        value={positive ? `${positive} %` : 0}
-                    />
+                    <tbody>
+                        <Statistics text='good' value={good} />
+                        <Statistics text='neutral' value={neutral} />
+                        <Statistics text='bad' value={bad} />
+                        <Statistics text='all' value={all} />
+                        <Statistics text='average' value={average ? average : 0} />
+                        <Statistics
+                            text='positive'
+                            value={positive ? `${positive} %` : 0}
+                        />
+                    </tbody>
                 </table>
             )}
         </div>
