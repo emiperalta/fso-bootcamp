@@ -18,7 +18,11 @@ const App = () => {
   return (
     <>
       <Finder handleChange={handleChange} countryName={countryName} />
-      <Countries countries={countries} countryName={countryName} />
+      <Countries
+        countries={countries}
+        countryName={countryName}
+        setCountryName={setCountryName}
+      />
     </>
   );
 };
