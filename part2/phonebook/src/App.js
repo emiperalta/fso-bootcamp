@@ -11,6 +11,8 @@ function App() {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [nameFilter, setNameFilter] = useState('');
+  const [error, setError] = useState('');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     getAll().then(allPersons => setPersons(allPersons));
@@ -26,16 +28,23 @@ function App() {
       );
 
       result &&
-        updateNumber(already_saved.id, { name: newName, number: newNumber }).then(
-          updPerson => {
+        updateNumber(already_saved.id, { name: newName, number: newNumber })
+          .then(updPerson => {
             const p = persons.find(per => per.id === updPerson.id);
             setPersons([...persons, (p.number = updPerson.number)]);
-          }
-        );
+          })
+          .catch(e => {
+            setError(
+              `Information of ${newName} has already been removed from server`
+            );
+            setTimeout(() => setError(''), 5000);
+          });
     } else {
-      addPhone({ name: newName, number: newNumber }).then(newPerson =>
-        setPersons([...persons, newPerson])
-      );
+      addPhone({ name: newName, number: newNumber }).then(newPerson => {
+        setPersons([...persons, newPerson]);
+        setMessage(`${newName} added`);
+        setTimeout(() => setMessage(''), 5000);
+      });
       setNewName('');
       setNewNumber('');
     }
@@ -59,6 +68,9 @@ function App() {
   return (
     <div>
       <h2>Phonebook</h2>
+
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+      {message && <p style={{ color: 'green' }}>{message}</p>}
 
       <Filter handleChange={handleChangeFilter} nameFilter={nameFilter} />
 
