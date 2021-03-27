@@ -4,59 +4,86 @@ import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
 
+import { getAll, addPhone, deletePhone, updateNumber } from './services/phonebook';
+
 function App() {
-    const [persons, setPersons] = useState([]);
-    const [newName, setNewName] = useState('');
-    const [newNumber, setNewNumber] = useState('');
-    const [nameFilter, setNameFilter] = useState('');
+  const [persons, setPersons] = useState([]);
+  const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
+  const [nameFilter, setNameFilter] = useState('');
 
-    useEffect(() => {
-        fetch('http://localhost:3001/persons')
-            .then(res => res.json())
-            .then(data => setPersons(data));
-    }, []);
+  useEffect(() => {
+    getAll().then(allPersons => setPersons(allPersons));
+  }, []);
 
-    const handleSubmit = e => {
-        e.preventDefault();
+  const handleSubmit = e => {
+    e.preventDefault();
 
-        const already_saved = persons.find(({ name }) => newName === name);
-        if (already_saved) return alert(`${newName} is already added to phonebook`);
+    const already_saved = persons.find(({ name }) => newName === name);
+    if (already_saved) {
+      const result = window.confirm(
+        `${newName} is already added to phonebook, replace the old number with a new one?`
+      );
 
-        setPersons([...persons, { name: newName, number: newNumber }]);
-    };
+      result &&
+        updateNumber(already_saved.id, { name: newName, number: newNumber }).then(
+          updPerson => {
+            const p = persons.find(per => per.id === updPerson.id);
+            setPersons([...persons, (p.number = updPerson.number)]);
+          }
+        );
+    } else {
+      addPhone({ name: newName, number: newNumber }).then(newPerson =>
+        setPersons([...persons, newPerson])
+      );
+      setNewName('');
+      setNewNumber('');
+    }
+  };
 
-    const handleChangeName = e => setNewName(e.target.value);
-    const handleChangeNumber = e => setNewNumber(e.target.value);
-    const handleChangeFilter = e => setNameFilter(e.target.value);
+  const handleDelete = id => {
+    const p = persons.find(p => p.id === id);
+    const result = window.confirm(`Delete ${p.name}?`);
+    result &&
+      deletePhone(id).then(() => {
+        const personsCopy = [...persons];
+        const personsUpd = personsCopy.filter(p => p.id !== id);
+        setPersons(personsUpd);
+      });
+  };
 
-    return (
-        <div>
-            <h2>Phonebook</h2>
+  const handleChangeName = e => setNewName(e.target.value);
+  const handleChangeNumber = e => setNewNumber(e.target.value);
+  const handleChangeFilter = e => setNameFilter(e.target.value);
 
-            <Filter handleChange={handleChangeFilter} nameFilter={nameFilter} />
+  return (
+    <div>
+      <h2>Phonebook</h2>
 
-            <h2>add new</h2>
+      <Filter handleChange={handleChangeFilter} nameFilter={nameFilter} />
 
-            <PersonForm
-                handleSubmit={handleSubmit}
-                handleChangeName={handleChangeName}
-                handleChangeNumber={handleChangeNumber}
-                newName={newName}
-                newNumber={newNumber}
-            />
+      <h2>add new</h2>
 
-            <h2>Numbers</h2>
-            {persons
-                .filter(({ name }) =>
-                    name
-                        .toLocaleLowerCase()
-                        .startsWith(nameFilter.toLocaleLowerCase())
-                )
-                .map(person => (
-                    <Persons key={person.name} person={person} />
-                ))}
-        </div>
-    );
+      <PersonForm
+        handleSubmit={handleSubmit}
+        handleChangeName={handleChangeName}
+        handleChangeNumber={handleChangeNumber}
+        newName={newName}
+        newNumber={newNumber}
+      />
+
+      <h2>Numbers</h2>
+      {persons
+        .filter(
+          ({ name }) =>
+            name &&
+            name.toLocaleLowerCase().startsWith(nameFilter.toLocaleLowerCase())
+        )
+        .map(person => (
+          <Persons handleDelete={handleDelete} key={person.id} person={person} />
+        ))}
+    </div>
+  );
 }
 
 export default App;
