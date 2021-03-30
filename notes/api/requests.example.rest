@@ -1,0 +1,18 @@
+@baseURL = http://<HOST>:<PORT>/api
+
+###
+GET {{baseURL}}/notes
+
+###
+GET {{baseURL}}/notes/3
+
+###
+POST {{baseURL}}/notes
+Content-Type: application/json
+
+{
+    "content": "test"
+}
+
+###
+DELETE {{baseURL}}/notes/3
