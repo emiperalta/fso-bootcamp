@@ -1,0 +1,22 @@
+@baseURL = http://<HOST>:<PORT>
+
+### GET Persons
+GET {{baseURL}}/api/persons
+
+### GET One person
+GET {{ baseURL }}/api/persons/3
+
+### GET Info
+GET {{ baseURL }}/info
+
+### POST Person
+POST {{ baseURL }}/api/persons
+Content-Type: application/json
+
+{
+    "name": "test",
+    "number": "test"
+}
+
+### DELETE Person
+DELETE {{ baseURL }}/api/persons/3
