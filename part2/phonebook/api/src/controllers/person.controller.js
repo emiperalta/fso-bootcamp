@@ -1,4 +1,4 @@
-const persons = [
+let persons = [
   {
     name: 'Arto Hellas',
     number: '040-123456',
@@ -21,16 +21,14 @@ const persons = [
   },
 ];
 
-module.exports.getPersons = (req, res) => {
-  res.json(persons);
-};
+module.exports.getPersons = (req, res) => res.status(200).json(persons);
 
 module.exports.getPerson = (req, res) => {
   const id = Number(req.params.id);
-  const personFinded = persons.find(person => person.id === id);
+  const person = persons.find(p => p.id === id);
 
-  if (personFinded) res.json(personFinded);
-  else res.status(404).json({ error: 'Person not founded.' });
+  if (person) return res.status(200).json(person);
+  else res.status(404).end();
 };
 
 module.exports.getInfo = (req, res) => {
@@ -43,10 +41,10 @@ module.exports.getInfo = (req, res) => {
 
 module.exports.addPerson = (req, res) => {
   const { name, number } = req.body;
-  const personFinded = persons.find(person => person.name === name);
+  const person = persons.find(p => p.name === name);
 
-  if (personFinded) return res.status(400).json({ error: 'Name must be unique.' });
-  if (name === '' || number === '')
+  if (person) return res.status(400).json({ error: 'Name must be unique.' });
+  if (!name || !number)
     return res.status(400).json({ error: 'Name or number must not be empty.' });
 
   const newPerson = {
@@ -54,17 +52,17 @@ module.exports.addPerson = (req, res) => {
     number,
     id: Math.floor(Math.random() * 1000),
   };
-  persons.push(newPerson);
 
-  res.json(persons);
+  persons = [...persons, newPerson];
+  res.status(201).json(newPerson);
 };
 
 module.exports.deletePerson = (req, res) => {
   const id = Number(req.params.id);
-  const personFinded = persons.find(person => person.id === id);
+  const person = persons.find(p => p.id === id);
 
-  if (personFinded) {
-    const deleted = persons.filter(person => person.id !== personFinded.id);
-    res.json(deleted);
-  } else res.status(404).json({ error: 'Person not founded.' });
+  if (person) {
+    persons = persons.filter(p => p.id !== person.id);
+    return res.status(204).end();
+  } else return res.status(404).json({ error: 'Person not found.' });
 };

@@ -23,8 +23,8 @@ module.exports.getAllNotes = (req, res) => res.status(200).json(notes);
 
 module.exports.getNote = (req, res) => {
   const id = Number(req.params.id);
-
   const note = notes.find(n => n.id === id);
+
   note ? res.status(200).json(note) : res.status(404).end();
 };
 
@@ -40,12 +40,16 @@ module.exports.addNote = (req, res) => {
     important: Math.random() < 0.5,
   };
 
-  notes.push(newNote);
-  res.status(200).json(newNote);
+  notes = [...notes, newNote];
+  res.status(201).json(newNote);
 };
 
 module.exports.deleteNote = (req, res) => {
   const id = Number(req.params.id);
-  notes = notes.filter(note => note.id !== id);
-  res.status(204).end();
+  const note = notes.find(n => n.id === id);
+
+  if (note) {
+    notes = notes.filter(note => note.id !== id);
+    return res.status(204).end();
+  } else return res.status(404).json({ error: 'Note not found.' });
 };
