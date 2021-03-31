@@ -1,11 +1,11 @@
-const baseURL = 'http://localhost:3001/persons';
+const { REACT_APP_APIKEY } = process.env;
 
 export const getAll = () => {
-  return fetch(baseURL).then(res => res.json());
+  return fetch(REACT_APP_APIKEY).then(res => res.json());
 };
 
 export const addPhone = ({ name, number }) => {
-  return fetch(baseURL, {
+  return fetch(REACT_APP_APIKEY, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -15,16 +15,16 @@ export const addPhone = ({ name, number }) => {
 };
 
 export const deletePhone = id => {
-  return fetch(`${baseURL}/${id}`, {
+  return fetch(`${REACT_APP_APIKEY}/${id}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
-  }).then(res => res.json());
+  });
 };
 
 export const updateNumber = (id, { name, number }) => {
-  return fetch(`${baseURL}/${id}`, {
+  return fetch(`${REACT_APP_APIKEY}/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
