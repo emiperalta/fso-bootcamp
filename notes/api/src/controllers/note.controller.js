@@ -1,31 +1,19 @@
-let notes = [
-  {
-    id: 1,
-    content: 'HTML is easy',
-    date: '2019-05-30T17:30:31.098Z',
-    important: true,
-  },
-  {
-    id: 2,
-    content: 'Browser can execute only Javascript',
-    date: '2019-05-30T18:39:34.091Z',
-    important: false,
-  },
-  {
-    id: 3,
-    content: 'GET and POST are the most important methods of HTTP protocol',
-    date: '2019-05-30T19:20:14.298Z',
-    important: true,
-  },
-];
+const Note = require('../models/Note');
 
-module.exports.getAllNotes = (req, res) => res.status(200).json(notes);
+module.exports.getAllNotes = (req, res) => {
+  Note.find({})
+    .then(result => res.json(result))
+    .catch(err => console.error(err));
+};
 
-module.exports.getNote = (req, res) => {
-  const id = Number(req.params.id);
-  const note = notes.find(n => n.id === id);
-
-  note ? res.status(200).json(note) : res.status(404).end();
+module.exports.getNote = (req, res, next) => {
+  const { id } = req.params;
+  Note.findById(id)
+    .then(note => {
+      if (note) res.json(note);
+      else res.status(404).end();
+    })
+    .catch(err => next(err));
 };
 
 module.exports.addNote = (req, res) => {
@@ -33,23 +21,36 @@ module.exports.addNote = (req, res) => {
 
   if (!content) return res.status(400).json({ error: 'Content must not be empty.' });
 
-  const newNote = {
-    id: Math.floor(Math.random() * 1000),
+  const newNote = new Note({
     content,
     date: new Date(),
     important: Math.random() < 0.5,
-  };
+  });
 
-  notes = [...notes, newNote];
-  res.status(201).json(newNote);
+  newNote
+    .save()
+    .then(savedNote => res.status(201).json(savedNote))
+    .catch(err => console.error(err));
 };
 
-module.exports.deleteNote = (req, res) => {
-  const id = Number(req.params.id);
-  const note = notes.find(n => n.id === id);
+module.exports.updateNote = (req, res, next) => {
+  const { id } = req.params;
+  const { body } = req;
 
-  if (note) {
-    notes = notes.filter(note => note.id !== id);
-    return res.status(204).end();
-  } else return res.status(404).json({ error: 'Note not found.' });
+  const note = {
+    content: body.content,
+    important: body.important,
+  };
+
+  Note.findByIdAndUpdate(id, note, { new: true })
+    .then(updatedNote => res.json(updatedNote))
+    .catch(err => next(err));
+};
+
+module.exports.deleteNote = (req, res, next) => {
+  const { id } = req.params;
+
+  Note.findByIdAndRemove(id)
+    .then(() => res.status(204).end())
+    .catch(err => next(err));
 };

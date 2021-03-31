@@ -4,7 +4,7 @@
 GET {{baseURL}}/notes
 
 ###
-GET {{baseURL}}/notes/3
+GET {{baseURL}}/notes/:id
 
 ###
 POST {{baseURL}}/notes
@@ -12,6 +12,15 @@ Content-Type: application/json
 
 {
     "content": "test"
+}
+
+###
+PUT {{baseURL}}/notes/:id
+Content-Type: application/json
+
+{
+    "content": "test",
+    "important": true
 }
 
 ###

@@ -19,11 +19,12 @@ const App = () => {
   const handleSubmit = e => {
     e.preventDefault();
 
-    addNote({
-      content: newNote,
-      date: new Date(),
-      important: false,
-    }).then(noteAdded => setNotes([...notes, noteAdded]));
+    newNote &&
+      addNote({
+        content: newNote,
+        date: new Date(),
+        important: Math.random() < 0.5,
+      }).then(noteAdded => setNotes([...notes, noteAdded]));
 
     setNewNote('');
   };
@@ -31,12 +32,12 @@ const App = () => {
   const handleChange = e => setNewNote(e.target.value);
 
   const toggleImportanceOf = id => {
-    const note = notes.find(n => n.id === id);
+    const note = notes.find(n => n._id === id);
     const changedNote = { ...note, important: !note.important };
 
     changeNote(id, changedNote)
       .then(result => {
-        setNotes(notes.map(note => (note.id !== id ? note : result)));
+        setNotes(notes.map(note => (note._id !== id ? note : result)));
       })
       .catch(e => {
         setError(`Note '${note.content}' was already removed from server`);

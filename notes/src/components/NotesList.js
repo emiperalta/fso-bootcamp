@@ -5,9 +5,9 @@ const NotesList = ({ notesToShow, toggleImportanceOf }) => {
     <ul>
       {notesToShow.map(note => (
         <Note
-          key={note.id}
+          key={note._id}
           note={note}
-          toggleImportance={() => toggleImportanceOf(note.id)}
+          toggleImportance={() => toggleImportanceOf(note._id)}
         />
       ))}
     </ul>

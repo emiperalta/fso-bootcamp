@@ -10,6 +10,8 @@ router.get('/notes/:id', noteController.getNote);
 
 router.post('/notes', noteController.addNote);
 
+router.put('/notes/:id', noteController.updateNote);
+
 router.delete('/notes/:id', noteController.deleteNote);
 
 module.exports = router;
