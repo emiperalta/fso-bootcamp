@@ -16,7 +16,7 @@ module.exports.getNote = (req, res, next) => {
     .catch(err => next(err));
 };
 
-module.exports.addNote = (req, res) => {
+module.exports.addNote = (req, res, next) => {
   const { content } = req.body;
 
   if (!content) return res.status(400).json({ error: 'Content must not be empty.' });
@@ -30,7 +30,7 @@ module.exports.addNote = (req, res) => {
   newNote
     .save()
     .then(savedNote => res.status(201).json(savedNote))
-    .catch(err => console.error(err));
+    .catch(err => next(err));
 };
 
 module.exports.updateNote = (req, res, next) => {
