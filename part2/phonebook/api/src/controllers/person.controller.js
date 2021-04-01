@@ -1,68 +1,75 @@
-let persons = [
-  {
-    name: 'Arto Hellas',
-    number: '040-123456',
-    id: 1,
-  },
-  {
-    name: 'Ada Lovelace',
-    number: '39-44-5323523',
-    id: 2,
-  },
-  {
-    name: 'Dan Abramov',
-    number: '12-43-234345',
-    id: 3,
-  },
-  {
-    name: 'Mary Poppendieck',
-    number: '39-23-6423122',
-    id: 4,
-  },
-];
+const Person = require('../models/Person');
 
-module.exports.getPersons = (req, res) => res.status(200).json(persons);
+module.exports.getPersons = (req, res) => {
+  Person.find({})
+    .then(persons => res.json(persons))
+    .catch(err => console.error(err));
+};
 
-module.exports.getPerson = (req, res) => {
-  const id = Number(req.params.id);
-  const person = persons.find(p => p.id === id);
+module.exports.getPerson = (req, res, next) => {
+  const { id } = req.params;
 
-  if (person) return res.status(200).json(person);
-  else res.status(404).end();
+  Person.findById(id)
+    .then(person => {
+      if (person) res.json(person);
+      else res.status(404).end();
+    })
+    .catch(err => next(err));
 };
 
 module.exports.getInfo = (req, res) => {
   const date = new Date();
-  res.send(`
-		<p>Phonebook has info for ${persons.length} people</p>
-		<p>${date}</p>	
-	`);
+  Person.find({})
+    .then(persons =>
+      res.send(`
+        <p>Phonebook has info for ${persons.length} people</p>
+        <p>${date}</p>	
+      `)
+    )
+    .catch(err => console.error(err));
 };
 
 module.exports.addPerson = (req, res) => {
   const { name, number } = req.body;
-  const person = persons.find(p => p.name === name);
 
-  if (person) return res.status(400).json({ error: 'Name must be unique.' });
   if (!name || !number)
-    return res.status(400).json({ error: 'Name or number must not be empty.' });
+    return res.status(400).json({ error: 'Name and number must not be empty.' });
 
-  const newPerson = {
-    name,
-    number,
-    id: Math.floor(Math.random() * 1000),
-  };
+  Person.findOne({ name })
+    .then(person => {
+      if (person) return res.status(400).json({ error: 'Name must be unique.' });
 
-  persons = [...persons, newPerson];
-  res.status(201).json(newPerson);
+      const newPerson = new Person({
+        name,
+        number,
+      });
+
+      newPerson
+        .save()
+        .then(savedPerson => res.status(201).json(savedPerson))
+        .catch(err => console.error(err));
+    })
+    .catch(err => console.error(err));
 };
 
-module.exports.deletePerson = (req, res) => {
-  const id = Number(req.params.id);
-  const person = persons.find(p => p.id === id);
+module.exports.updatePerson = (req, res, next) => {
+  const { id } = req.params;
+  const { name, number } = req.body;
 
-  if (person) {
-    persons = persons.filter(p => p.id !== person.id);
-    return res.status(204).end();
-  } else return res.status(404).json({ error: 'Person not found.' });
+  const person = {
+    name,
+    number,
+  };
+
+  Person.findByIdAndUpdate(id, person, { new: true })
+    .then(updatedPerson => res.json(updatedPerson))
+    .catch(err => next(err));
+};
+
+module.exports.deletePerson = (req, res, next) => {
+  const { id } = req.params;
+
+  Person.findByIdAndRemove(id)
+    .then(() => res.status(204).end())
+    .catch(err => next(err));
 };

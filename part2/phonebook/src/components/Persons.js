@@ -2,9 +2,9 @@ import React from 'react';
 
 const Persons = ({ handleDelete, person }) => {
   return (
-    <section key={person.name}>
+    <section>
       {person.name} {person.number}{' '}
-      <button onClick={() => handleDelete(person.id)}>delete</button>
+      <button onClick={() => handleDelete(person._id)}>delete</button>
     </section>
   );
 };

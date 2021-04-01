@@ -12,6 +12,8 @@ router.get('/info', personController.getInfo);
 
 router.post('/api/persons', personController.addPerson);
 
+router.put('/api/persons/:id', personController.updatePerson);
+
 router.delete('/api/persons/:id', personController.deletePerson);
 
 module.exports = router;

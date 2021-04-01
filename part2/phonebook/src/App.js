@@ -28,9 +28,9 @@ function App() {
       );
 
       result &&
-        updateNumber(already_saved.id, { name: newName, number: newNumber })
+        updateNumber(already_saved._id, { name: newName, number: newNumber })
           .then(updPerson => {
-            const p = persons.find(per => per.id === updPerson.id);
+            const p = persons.find(per => per._id === updPerson._id);
             setPersons([...persons, (p.number = updPerson.number)]);
           })
           .catch(e => {
@@ -51,12 +51,12 @@ function App() {
   };
 
   const handleDelete = id => {
-    const p = persons.find(p => p.id === id);
+    const p = persons.find(p => p._id === id);
     const result = window.confirm(`Delete ${p.name}?`);
     result &&
       deletePhone(id).then(() => {
         const personsCopy = [...persons];
-        const personsUpd = personsCopy.filter(p => p.id !== id);
+        const personsUpd = personsCopy.filter(p => p._id !== id);
         setPersons(personsUpd);
       });
   };
@@ -92,7 +92,7 @@ function App() {
             name.toLocaleLowerCase().startsWith(nameFilter.toLocaleLowerCase())
         )
         .map(person => (
-          <Persons handleDelete={handleDelete} key={person.id} person={person} />
+          <Persons handleDelete={handleDelete} key={person._id} person={person} />
         ))}
     </div>
   );

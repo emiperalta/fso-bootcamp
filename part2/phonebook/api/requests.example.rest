@@ -4,7 +4,7 @@
 GET {{baseURL}}/api/persons
 
 ### 
-GET {{ baseURL }}/api/persons/3
+GET {{ baseURL }}/api/persons/:id
 
 ### 
 GET {{ baseURL }}/info
@@ -15,8 +15,17 @@ Content-Type: application/json
 
 {
     "name": "test",
-    "number": "test"
+    "number": 111
+}
+
+###
+PUT {{baseURL}}/api/persons/:id
+Content-Type: application/json
+
+{
+    "name": "test",
+    "number": 111
 }
 
 ### 
-DELETE {{ baseURL }}/api/persons/3
+DELETE {{ baseURL }}/api/persons/:id
