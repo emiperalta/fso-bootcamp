@@ -11,7 +11,12 @@ export const addPhone = ({ name, number }) => {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ name, number }),
-  }).then(res => res.json());
+  })
+    .then(res => res.json())
+    .then(result => {
+      if (result.error) throw Error(result.error);
+      return result;
+    });
 };
 
 export const deletePhone = id => {

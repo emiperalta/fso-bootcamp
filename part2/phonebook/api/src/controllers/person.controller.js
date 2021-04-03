@@ -29,11 +29,8 @@ module.exports.getInfo = (req, res) => {
     .catch(err => console.error(err));
 };
 
-module.exports.addPerson = (req, res) => {
+module.exports.addPerson = (req, res, next) => {
   const { name, number } = req.body;
-
-  if (!name || !number)
-    return res.status(400).json({ error: 'Name and number must not be empty.' });
 
   Person.findOne({ name })
     .then(person => {
@@ -47,7 +44,7 @@ module.exports.addPerson = (req, res) => {
       newPerson
         .save()
         .then(savedPerson => res.status(201).json(savedPerson))
-        .catch(err => console.error(err));
+        .catch(err => next(err));
     })
     .catch(err => console.error(err));
 };
@@ -55,6 +52,9 @@ module.exports.addPerson = (req, res) => {
 module.exports.updatePerson = (req, res, next) => {
   const { id } = req.params;
   const { name, number } = req.body;
+
+  if (!name || !number)
+    return res.status(400).json({ error: 'Name and number must not be empty' });
 
   const person = {
     name,

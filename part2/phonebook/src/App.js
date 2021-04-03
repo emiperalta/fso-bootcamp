@@ -22,7 +22,7 @@ function App() {
     e.preventDefault();
 
     const already_saved = persons.find(({ name }) => newName === name);
-    if (already_saved) {
+    if (already_saved && newNumber) {
       const result = window.confirm(
         `${newName} is already added to phonebook, replace the old number with a new one?`
       );
@@ -33,18 +33,23 @@ function App() {
             const p = persons.find(per => per._id === updPerson._id);
             setPersons([...persons, (p.number = updPerson.number)]);
           })
-          .catch(e => {
+          .catch(err => {
             setError(
-              `Information of ${newName} has already been removed from server`
+              `Information of '${newName}' has already been removed from server`
             );
             setTimeout(() => setError(''), 5000);
           });
     } else {
-      addPhone({ name: newName, number: newNumber }).then(newPerson => {
-        setPersons([...persons, newPerson]);
-        setMessage(`${newName} added`);
-        setTimeout(() => setMessage(''), 5000);
-      });
+      addPhone({ name: newName, number: newNumber })
+        .then(newPerson => {
+          setPersons([...persons, newPerson]);
+          setMessage(`'${newName}' added`);
+          setTimeout(() => setMessage(''), 5000);
+        })
+        .catch(err => {
+          setError(`${err}`);
+          setTimeout(() => setError(''), 5000);
+        });
       setNewName('');
       setNewNumber('');
     }
