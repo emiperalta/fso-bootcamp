@@ -4,14 +4,14 @@ const noteController = require('../controllers/note.controller');
 
 const router = Router();
 
-router.get('/notes', noteController.getAllNotes);
+router.get('/', noteController.getAllNotes);
 
-router.get('/notes/:id', noteController.getNote);
+router.get('/:id', noteController.getNote);
 
-router.post('/notes', noteController.addNote);
+router.post('/', noteController.addNote);
 
-router.put('/notes/:id', noteController.updateNote);
+router.put('/:id', noteController.updateNote);
 
-router.delete('/notes/:id', noteController.deleteNote);
+router.delete('/:id', noteController.deleteNote);
 
 module.exports = router;

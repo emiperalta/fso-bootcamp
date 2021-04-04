@@ -3,7 +3,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 
 const noteRoutes = require('./routes/note.routes');
-const errorHandler = require('./utils/errorHandler');
+const middleware = require('./utils/middleware');
 
 const app = express();
 
@@ -12,8 +12,9 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use('/api', noteRoutes);
+app.use('/api/notes', noteRoutes);
 
-app.use(errorHandler);
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
 module.exports = app;

@@ -1,7 +1,8 @@
-require('dotenv/config');
 const mongoose = require('mongoose');
 
-const connectionString = process.env.MONGODB_URI;
+const config = require('./utils/config');
+const logger = require('./utils/logger');
+
 const connectionOptions = {
   useCreateIndex: true,
   useFindAndModify: false,
@@ -11,7 +12,7 @@ const connectionOptions = {
 
 (() => {
   mongoose
-    .connect(connectionString, connectionOptions)
-    .then(() => console.log('Db connected.'))
-    .catch(e => console.error(e));
+    .connect(config.MONGODB_URI, connectionOptions)
+    .then(() => logger.info('Db connected.'))
+    .catch(err => logger.error(err));
 })();

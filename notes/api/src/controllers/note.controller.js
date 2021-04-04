@@ -1,9 +1,7 @@
 const Note = require('../models/Note');
 
 module.exports.getAllNotes = (req, res) => {
-  Note.find({})
-    .then(result => res.json(result))
-    .catch(err => console.error(err));
+  Note.find({}).then(notes => res.json(notes));
 };
 
 module.exports.getNote = (req, res, next) => {
