@@ -1,20 +1,22 @@
 const Note = require('../models/Note');
 
-module.exports.getAllNotes = (req, res) => {
-  Note.find({}).then(notes => res.json(notes));
+module.exports.getAllNotes = async (req, res) => {
+  const notes = await Note.find({});
+  res.json(notes);
 };
 
-module.exports.getNote = (req, res, next) => {
+module.exports.getNote = async (req, res, next) => {
   const { id } = req.params;
-  Note.findById(id)
-    .then(note => {
-      if (note) res.json(note);
-      else res.status(404).end();
-    })
-    .catch(err => next(err));
+  try {
+    const note = await Note.findById(id);
+    if (note) res.json(note);
+    else res.status(404).end();
+  } catch (err) {
+    next(err);
+  }
 };
 
-module.exports.addNote = (req, res, next) => {
+module.exports.addNote = async (req, res, next) => {
   const { content } = req.body;
 
   if (!content) return res.status(400).json({ error: 'Content must not be empty.' });
@@ -25,13 +27,15 @@ module.exports.addNote = (req, res, next) => {
     important: Math.random() < 0.5,
   });
 
-  newNote
-    .save()
-    .then(savedNote => res.status(201).json(savedNote))
-    .catch(err => next(err));
+  try {
+    const savedNote = await newNote.save();
+    res.status(201).json(savedNote);
+  } catch (err) {
+    next(err);
+  }
 };
 
-module.exports.updateNote = (req, res, next) => {
+module.exports.updateNote = async (req, res, next) => {
   const { id } = req.params;
   const { body } = req;
 
@@ -40,15 +44,20 @@ module.exports.updateNote = (req, res, next) => {
     important: body.important,
   };
 
-  Note.findByIdAndUpdate(id, note, { new: true })
-    .then(updatedNote => res.json(updatedNote))
-    .catch(err => next(err));
+  try {
+    const updatedNote = await Note.findByIdAndUpdate(id, note, { new: true });
+    res.json(updatedNote);
+  } catch (err) {
+    next(err);
+  }
 };
 
-module.exports.deleteNote = (req, res, next) => {
+module.exports.deleteNote = async (req, res, next) => {
   const { id } = req.params;
-
-  Note.findByIdAndRemove(id)
-    .then(() => res.status(204).end())
-    .catch(err => next(err));
+  try {
+    await Note.findByIdAndRemove(id);
+    res.status(204).end();
+  } catch (err) {
+    next(err);
+  }
 };
