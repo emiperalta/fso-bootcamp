@@ -1,0 +1,15 @@
+@baseURL = http://<HOST>:<PORT>/api
+
+###
+GET {{baseURL}}/users
+
+###
+POST {{baseURL}}/users
+Content-Type: application/json
+
+{
+    "username": "test",
+    "name": "test",
+    "password": "test",
+    "notes": []
+}

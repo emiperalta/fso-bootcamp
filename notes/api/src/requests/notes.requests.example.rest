@@ -11,7 +11,7 @@ POST {{baseURL}}/notes
 Content-Type: application/json
 
 {
-    "content": "test"
+    "content": "testt"
 }
 
 ###
@@ -19,9 +19,9 @@ PUT {{baseURL}}/notes/:id
 Content-Type: application/json
 
 {
-    "content": "test",
+    "content": "testt",
     "important": true
 }
 
 ###
-DELETE {{baseURL}}/notes/3
+DELETE {{baseURL}}/notes/:id

@@ -1,11 +1,12 @@
 const Note = require('../models/Note');
+const User = require('../models/User');
 
-module.exports.getAllNotes = async (req, res) => {
-  const notes = await Note.find({});
+const getAllNotes = async (req, res) => {
+  const notes = await Note.find({}).populate('user', { username: 1, name: 1 });
   res.json(notes);
 };
 
-module.exports.getNote = async (req, res, next) => {
+const getNote = async (req, res, next) => {
   const { id } = req.params;
   try {
     const note = await Note.findById(id);
@@ -16,26 +17,31 @@ module.exports.getNote = async (req, res, next) => {
   }
 };
 
-module.exports.addNote = async (req, res, next) => {
-  const { content } = req.body;
+const addNote = async (req, res, next) => {
+  const { content, userId } = req.body;
 
   if (!content) return res.status(400).json({ error: 'Content must not be empty.' });
+
+  const userFromDB = await User.findById(userId);
 
   const newNote = new Note({
     content,
     date: new Date(),
     important: Math.random() < 0.5,
+    user: userFromDB._id,
   });
 
   try {
     const savedNote = await newNote.save();
+    userFromDB.notes = [...userFromDB.notes, savedNote._id];
+    await userFromDB.save();
     res.status(201).json(savedNote);
   } catch (err) {
     next(err);
   }
 };
 
-module.exports.updateNote = async (req, res, next) => {
+const updateNote = async (req, res, next) => {
   const { id } = req.params;
   const { body } = req;
 
@@ -52,7 +58,7 @@ module.exports.updateNote = async (req, res, next) => {
   }
 };
 
-module.exports.deleteNote = async (req, res, next) => {
+const deleteNote = async (req, res, next) => {
   const { id } = req.params;
   try {
     await Note.findByIdAndRemove(id);
@@ -60,4 +66,12 @@ module.exports.deleteNote = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+module.exports = {
+  getAllNotes,
+  getNote,
+  addNote,
+  updateNote,
+  deleteNote,
 };
