@@ -1,5 +1,15 @@
+const jwt = require('jsonwebtoken');
+
 const Note = require('../models/Note');
 const User = require('../models/User');
+const config = require('../utils/config');
+
+const getTokenFrom = req => {
+  const authorization = req.get('authorization');
+  if (authorization && authorization.startsWith('Bearer '))
+    return authorization.substring(7);
+  return null;
+};
 
 const getAllNotes = async (req, res) => {
   const notes = await Note.find({}).populate('user', { username: 1, name: 1 });
@@ -18,20 +28,27 @@ const getNote = async (req, res, next) => {
 };
 
 const addNote = async (req, res, next) => {
-  const { content, userId } = req.body;
-
-  if (!content) return res.status(400).json({ error: 'Content must not be empty.' });
-
-  const userFromDB = await User.findById(userId);
-
-  const newNote = new Note({
-    content,
-    date: new Date(),
-    important: Math.random() < 0.5,
-    user: userFromDB._id,
-  });
-
+  const { content } = req.body;
   try {
+    const token = getTokenFrom(req);
+    const decodedToken = jwt.verify(token, config.SECRET);
+
+    if (!content)
+      return res.status(400).json({ error: 'Content must not be empty.' });
+
+    if (!token || !decodedToken.id) {
+      return res.status(401).json({ error: 'Token missing or invalid.' });
+    }
+
+    const userFromDB = await User.findById(decodedToken.id);
+
+    const newNote = new Note({
+      content,
+      date: new Date(),
+      important: Math.random() < 0.5,
+      user: userFromDB._id,
+    });
+
     const savedNote = await newNote.save();
     userFromDB.notes = [...userFromDB.notes, savedNote._id];
     await userFromDB.save();

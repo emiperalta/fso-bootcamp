@@ -1,27 +1,28 @@
-@baseURL = http://<HOST>:<PORT>/api
+@baseURL = http://<HOST>:<PORT>/api/notes
 
 ###
-GET {{baseURL}}/notes
+GET {{baseURL}}
 
 ###
-GET {{baseURL}}/notes/:id
+GET {{baseURL}}/:id
 
 ###
-POST {{baseURL}}/notes
+POST {{baseURL}}
 Content-Type: application/json
+Authorization: Bearer <TOKEN>
 
 {
-    "content": "testt"
+    "content": "content test"
 }
 
 ###
-PUT {{baseURL}}/notes/:id
+PUT {{baseURL}}/:id
 Content-Type: application/json
 
 {
-    "content": "testt",
+    "content": "content test update",
     "important": true
 }
 
 ###
-DELETE {{baseURL}}/notes/:id
+DELETE {{baseURL}}/:id
