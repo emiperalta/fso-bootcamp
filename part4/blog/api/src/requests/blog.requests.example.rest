@@ -1,0 +1,32 @@
+@baseURL = http://<HOST>:<PORT>/api/blogs
+
+###
+GET {{baseURL}}
+
+###
+POST {{baseURL}}
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+
+{
+  "title": "title test",
+  "author": "author test",
+  "url": "url test",
+  "likes": 25
+}
+
+###
+PUT {{baseURL}}/:id
+Content-Type: application/json
+Authorization: Bearer <TOKEN>
+
+{
+  "title": "title test updated",
+  "author": "author test",
+  "url": "url test",
+  "likes": 55
+}
+
+###
+DELETE {{baseURL}}/:id
+Authorization: Bearer <TOKEN>

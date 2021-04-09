@@ -78,9 +78,15 @@ const getBlogs = async () => {
   };
 };
 
+const getUsers = async () => {
+  const users = await api.get('/api/users');
+  return users.body;
+};
+
 module.exports = {
   api,
   blogs,
   getBlogs,
+  getUsers,
   listWithOneBlog,
 };

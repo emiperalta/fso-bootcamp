@@ -1,8 +1,28 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
 const server = require('../server');
 const Blog = require('../models/Blog');
+const User = require('../models/User');
 const { api, blogs, getBlogs } = require('./helper');
+
+let token;
+
+beforeAll(async () => {
+  await User.deleteMany({});
+  const hashedPassword = await bcrypt.hash('ghost password', 10);
+  const newUser = new User({
+    username: 'ghost username',
+    name: 'ghost name',
+    password: hashedPassword,
+  });
+  await newUser.save();
+  const response = await api
+    .post('/api/login')
+    .send({ username: 'ghost username', password: 'ghost password' })
+    .expect(200);
+  token = response.body.token;
+});
 
 beforeEach(async () => {
   await Blog.deleteMany({});
@@ -36,6 +56,7 @@ describe('POST new blog', () => {
 
     await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -54,6 +75,7 @@ describe('POST new blog', () => {
 
     const savedBlog = await api
       .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/);
@@ -67,26 +89,60 @@ describe('POST new blog', () => {
     const newBlog = {
       author: 'author test without title and url properties',
     };
-    await api.post('/api/blogs').send(newBlog).expect(400);
+    await api
+      .post('/api/blogs')
+      .set('Authorization', `Bearer ${token}`)
+      .send(newBlog)
+      .expect(400);
+  });
+
+  test('fails if a token is not provided', async () => {
+    const { response: blogsAtStart } = await getBlogs();
+
+    const newBlog = {
+      username: 'another ghost username',
+      name: 'another ghost name',
+      password: 'another ghost password',
+    };
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/);
+
+    const { response: blogsAtEnd } = await getBlogs();
+
+    expect(blogsAtEnd.body).toHaveLength(blogsAtStart.body.length);
   });
 });
 
+//at this point, delete tests are not working because the blogs array objects in helper.js have no 'user' property
 describe('DELETE blog', () => {
   test('with valid id', async () => {
-    const { response } = await getBlogs();
-    const blogToDelete = response.body[0];
+    const { response: blogsAtStart } = await getBlogs();
+    const blogToDelete = blogsAtStart.body[0];
 
-    await api.delete(`/api/blogs/${blogToDelete._id}`).expect(204);
+    await api
+      .delete(`/api/blogs/${blogToDelete._id}`)
+      .set('Authorization', `Bearer ${token}`)
+      .expect(204);
 
-    const { contents, response: secondResponse } = await getBlogs();
-    expect(secondResponse.body).toHaveLength(blogs.length - 1);
+    const { contents, response: blogsAtEnd } = await getBlogs();
+    expect(blogsAtEnd.body).toHaveLength(blogsAtStart.body.length - 1);
     expect(contents).not.toContain(blogToDelete.title);
   });
 
   test('with a non existing id respond with 400 Bad Request', async () => {
-    await api.delete('/api/blogs/312312').expect(400);
-    const { response } = await getBlogs();
-    expect(response.body).toHaveLength(blogs.length);
+    const { response: blogsAtStart } = await getBlogs();
+
+    await api
+      .delete('/api/blogs/312312')
+      .set('Authorization', `Bearer ${token}`)
+      .expect(400);
+
+    const { response: blogsAtEnd } = await getBlogs();
+    expect(blogsAtEnd.body).toHaveLength(blogsAtStart.body.length);
   });
 });
 

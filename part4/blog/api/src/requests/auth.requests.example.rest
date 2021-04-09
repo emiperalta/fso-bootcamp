@@ -1,0 +1,10 @@
+@baseURL = http://<HOST>:<PORT>/api
+
+###
+POST {{baseURL}}/login
+Content-Type: application/json
+
+{
+  "username": "username test",
+  "password": "password test"
+}
