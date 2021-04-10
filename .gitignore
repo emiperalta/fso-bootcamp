@@ -25,3 +25,5 @@ yarn-error.log*
 
 requests.rest
 *.requests.rest
+
+.eslintrc.js

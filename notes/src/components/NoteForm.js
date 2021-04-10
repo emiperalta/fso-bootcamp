@@ -1,7 +1,10 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
-const NoteForm = ({ createNote, handleLogout }) => {
+import Toggable from './Toggable';
+
+const NoteForm = ({ createNote }) => {
   const [newNote, setNewNote] = useState('');
+  const noteFormRef = useRef();
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -10,16 +13,19 @@ const NoteForm = ({ createNote, handleLogout }) => {
         content: newNote,
         important: Math.random() < 0.5,
       });
+    newNote && noteFormRef.current.toggleVisibility();
     setNewNote('');
   };
 
   const handleChange = e => setNewNote(e.target.value);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input onChange={handleChange} value={newNote} />
-      <button type='submit'>save</button>
-    </form>
+    <Toggable buttonLabel='new note' ref={noteFormRef}>
+      <form onSubmit={handleSubmit}>
+        <input onChange={handleChange} value={newNote} />
+        <button type='submit'>save</button>
+      </form>
+    </Toggable>
   );
 };
 

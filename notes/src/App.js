@@ -1,10 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import NoteForm from './components/NoteForm';
 import NotesList from './components/NotesList';
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
-import Toggable from './components/Toggable';
 
 import { addNote, changeNote, getAll, setToken } from './services/noteService';
 import { login } from './services/userService';
@@ -16,7 +15,6 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const noteFormRef = useRef();
 
   useEffect(() => {
     getAll().then(allNotes => setNotes(allNotes));
@@ -32,7 +30,6 @@ const App = () => {
   }, []);
 
   const createNote = noteObj => {
-    noteFormRef.current.toggleVisibility();
     addNote(noteObj).then(noteAdded => setNotes([...notes, noteAdded]));
   };
 
@@ -85,21 +82,17 @@ const App = () => {
       {user ? (
         <>
           <p>{user.name} logged in</p>
-          <Toggable buttonLabel='new note' ref={noteFormRef}>
-            <NoteForm createNote={createNote} />
-          </Toggable>
+          <NoteForm createNote={createNote} />
           <button onClick={handleLogout}>logout</button>
         </>
       ) : (
-        <Toggable buttonLabel='log in'>
-          <LoginForm
-            handleLogin={handleLogin}
-            handleUsernameChange={handleUsernameChange}
-            handlePasswordChange={handlePasswordChange}
-            username={username}
-            password={password}
-          />
-        </Toggable>
+        <LoginForm
+          handleLogin={handleLogin}
+          handleUsernameChange={handleUsernameChange}
+          handlePasswordChange={handlePasswordChange}
+          username={username}
+          password={password}
+        />
       )}
 
       <section>
