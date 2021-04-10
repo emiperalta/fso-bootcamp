@@ -12,9 +12,6 @@ const App = () => {
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [error, setError] = useState('');
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -44,6 +41,7 @@ const App = () => {
       const user = await login({ username, password });
       window.localStorage.setItem('loggedUser', JSON.stringify(user));
       setUser(user);
+      setToken(user.token);
       setUsername('');
       setPassword('');
     } catch (err) {
@@ -57,11 +55,10 @@ const App = () => {
     setUser(null);
   };
 
-  const handleCreate = async e => {
-    e.preventDefault();
+  const createBlog = async blogObj => {
     try {
-      const newBlog = await addBlog({ title, author, url });
-      setMessage(`a new blog "${newBlog.title} by ${author}" added`);
+      const newBlog = await addBlog(blogObj);
+      setMessage(`a new blog "${newBlog.title} by ${newBlog.author}" added`);
       setTimeout(() => setMessage(''), 4000);
       setBlogs([...blogs, newBlog]);
     } catch (err) {
@@ -72,9 +69,6 @@ const App = () => {
 
   const handleUsernameChange = e => setUsername(e.target.value);
   const handlePasswordChange = e => setPassword(e.target.value);
-  const handleTitleChange = e => setTitle(e.target.value);
-  const handleAuthorChange = e => setAuthor(e.target.value);
-  const handleUrlChange = e => setUrl(e.target.value);
 
   return (
     <div>
@@ -87,15 +81,7 @@ const App = () => {
             {user.name} logged in <button onClick={handleLogout}>logout</button>
           </p>
           <h2>create new</h2>
-          <BlogForm
-            author={author}
-            handleAuthorChange={handleAuthorChange}
-            handleCreate={handleCreate}
-            handleTitleChange={handleTitleChange}
-            handleUrlChange={handleUrlChange}
-            title={title}
-            url={url}
-          />
+          <BlogForm createBlog={createBlog} />
           <BlogList blogs={blogs} />
         </>
       ) : (
