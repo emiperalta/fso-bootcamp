@@ -1,21 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import NoteForm from './components/NoteForm';
 import NotesList from './components/NotesList';
 import Notification from './components/Notification';
 import LoginForm from './components/LoginForm';
+import Toggable from './components/Toggable';
 
 import { addNote, changeNote, getAll, setToken } from './services/noteService';
 import { login } from './services/userService';
 
 const App = () => {
   const [notes, setNotes] = useState([]);
-  const [newNote, setNewNote] = useState('');
   const [showAll, setShowAll] = useState(true);
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
+  const noteFormRef = useRef();
 
   useEffect(() => {
     getAll().then(allNotes => setNotes(allNotes));
@@ -30,17 +31,9 @@ const App = () => {
     }
   }, []);
 
-  const handleSubmit = e => {
-    e.preventDefault();
-
-    newNote &&
-      addNote({
-        content: newNote,
-        date: new Date(),
-        important: Math.random() < 0.5,
-      }).then(noteAdded => setNotes([...notes, noteAdded]));
-
-    setNewNote('');
+  const createNote = noteObj => {
+    noteFormRef.current.toggleVisibility();
+    addNote(noteObj).then(noteAdded => setNotes([...notes, noteAdded]));
   };
 
   const handleLogin = async e => {
@@ -50,12 +43,19 @@ const App = () => {
       window.localStorage.setItem('loggedUser', JSON.stringify(user));
       setToken(user.token);
       setUser(user);
+      setUsername('');
+      setPassword('');
     } catch (err) {
-      console.error(err);
+      setError(`${err}`);
+      setTimeout(() => setError(''), 4000);
     }
   };
 
-  const handleChange = e => setNewNote(e.target.value);
+  const handleLogout = () => {
+    window.localStorage.removeItem('loggedUser');
+    setUser(null);
+  };
+
   const handleUsernameChange = e => setUsername(e.target.value);
   const handlePasswordChange = e => setPassword(e.target.value);
 
@@ -83,19 +83,23 @@ const App = () => {
       <Notification message={error} />
 
       {user ? (
-        <NoteForm
-          handleChange={handleChange}
-          handleSubmit={handleSubmit}
-          newNote={newNote}
-        />
+        <>
+          <p>{user.name} logged in</p>
+          <Toggable buttonLabel='new note' ref={noteFormRef}>
+            <NoteForm createNote={createNote} />
+          </Toggable>
+          <button onClick={handleLogout}>logout</button>
+        </>
       ) : (
-        <LoginForm
-          handleLogin={handleLogin}
-          handleUsernameChange={handleUsernameChange}
-          handlePasswordChange={handlePasswordChange}
-          username={username}
-          password={password}
-        />
+        <Toggable buttonLabel='log in'>
+          <LoginForm
+            handleLogin={handleLogin}
+            handleUsernameChange={handleUsernameChange}
+            handlePasswordChange={handlePasswordChange}
+            username={username}
+            password={password}
+          />
+        </Toggable>
       )}
 
       <section>

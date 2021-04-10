@@ -1,4 +1,4 @@
-const { REACT_APP_APIKEY } = process.env;
+const apiURL = process.env.REACT_APP_APIURL;
 
 let token = null;
 
@@ -7,22 +7,22 @@ export const setToken = newToken => {
 };
 
 export const getAll = () => {
-  return fetch(`${REACT_APP_APIKEY}/notes`).then(res => res.json());
+  return fetch(`${apiURL}/notes`).then(res => res.json());
 };
 
-export const addNote = ({ content, date, important }) => {
-  return fetch(`${REACT_APP_APIKEY}/notes`, {
+export const addNote = ({ content, important }) => {
+  return fetch(`${apiURL}/notes`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ content, date, important }),
+    body: JSON.stringify({ content, important }),
   }).then(res => res.json());
 };
 
 export const changeNote = (id, updatedNote) => {
-  return fetch(`${REACT_APP_APIKEY}/notes/${id}`, {
+  return fetch(`${apiURL}/notes/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
