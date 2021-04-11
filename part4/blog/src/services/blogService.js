@@ -26,3 +26,32 @@ export const addBlog = async data => {
   }
   return response.json();
 };
+
+export const likeBlog = async (id, likedBlog) => {
+  const response = await fetch(`${apiURL}/blogs/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(likedBlog),
+  });
+  if (!response.ok) {
+    const { error } = await response.json();
+    throw Error(error);
+  }
+  return response.json();
+};
+
+export const deleteBlog = async id => {
+  const response = await fetch(`${apiURL}/blogs/${id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) {
+    const { error } = await response.json();
+    throw Error(error);
+  }
+};

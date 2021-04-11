@@ -3,7 +3,13 @@ import { useEffect, useState } from 'react';
 import LoginForm from './components/LoginForm';
 import BlogList from './components/BlogList';
 import BlogForm from './components/BlogForm';
-import { addBlog, getBlogs, setToken } from './services/blogService';
+import {
+  addBlog,
+  deleteBlog,
+  getBlogs,
+  likeBlog,
+  setToken,
+} from './services/blogService';
 import { login } from './services/userService';
 
 const App = () => {
@@ -67,6 +73,33 @@ const App = () => {
     }
   };
 
+  const handleLike = async id => {
+    try {
+      let blog = blogs.find(b => b._id === id);
+      const likedBlog = { ...blog, likes: blog.likes + 1 };
+      const updatedBlog = await likeBlog(id, likedBlog);
+      setBlogs(blogs.map(blog => (blog._id !== id ? blog : updatedBlog)));
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async id => {
+    const blogToDelete = blogs.find(b => b._id === id);
+    const result = window.confirm(
+      `Remove blog "${blogToDelete.title} by ${blogToDelete.author}"?`
+    );
+    if (result) {
+      try {
+        await deleteBlog(id);
+        setBlogs(blogs.filter(blog => blog._id !== id));
+      } catch (err) {
+        setError(`${err}`);
+        setTimeout(() => setError(''), 4000);
+      }
+    }
+  };
+
   const handleUsernameChange = e => setUsername(e.target.value);
   const handlePasswordChange = e => setPassword(e.target.value);
 
@@ -82,7 +115,12 @@ const App = () => {
           </p>
           <h2>create new</h2>
           <BlogForm createBlog={createBlog} />
-          <BlogList blogs={blogs} />
+          <BlogList
+            blogs={blogs}
+            handleDelete={handleDelete}
+            handleLike={handleLike}
+            user={user}
+          />
         </>
       ) : (
         <LoginForm

@@ -1,7 +1,6 @@
 import BlogDetails from './BlogDetails';
-import Toggable from './Toggable';
 
-const BlogList = ({ blogs }) => {
+const BlogList = ({ blogs, handleDelete, handleLike, user }) => {
   const blogListStyle = {
     padding: 5,
     marginBottom: 10,
@@ -10,14 +9,19 @@ const BlogList = ({ blogs }) => {
 
   return (
     <>
-      {blogs.map(blog => (
-        <div key={blog._id} style={blogListStyle}>
-          {blog.title} {blog.author}
-          <Toggable buttonLabel='view'>
-            <BlogDetails likes={blog.likes} url={blog.url} />
-          </Toggable>
-        </div>
-      ))}
+      {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map(blog => (
+          <div key={blog._id} style={blogListStyle}>
+            {blog.title} {blog.author}
+            <BlogDetails
+              blog={blog}
+              handleDelete={handleDelete}
+              handleLike={handleLike}
+              user={user}
+            />
+          </div>
+        ))}
     </>
   );
 };
