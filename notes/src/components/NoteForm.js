@@ -21,10 +21,12 @@ const NoteForm = ({ createNote }) => {
 
   return (
     <Toggable buttonLabel='new note' ref={noteFormRef}>
-      <form onSubmit={handleSubmit}>
-        <input onChange={handleChange} value={newNote} />
-        <button type='submit'>save</button>
-      </form>
+      <div className='formDiv'>
+        <form onSubmit={handleSubmit}>
+          <input onChange={handleChange} value={newNote} />
+          <button type='submit'>save</button>
+        </form>
+      </div>
     </Toggable>
   );
 };
