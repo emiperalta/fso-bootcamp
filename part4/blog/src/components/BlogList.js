@@ -1,4 +1,4 @@
-import BlogDetails from './BlogDetails';
+import Blog from './Blog';
 
 const BlogList = ({ blogs, handleDelete, handleLike, user }) => {
   const blogListStyle = {
@@ -13,8 +13,7 @@ const BlogList = ({ blogs, handleDelete, handleLike, user }) => {
         .sort((a, b) => b.likes - a.likes)
         .map(blog => (
           <div key={blog._id} style={blogListStyle}>
-            {blog.title} {blog.author}
-            <BlogDetails
+            <Blog
               blog={blog}
               handleDelete={handleDelete}
               handleLike={handleLike}
