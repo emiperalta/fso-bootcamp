@@ -27,3 +27,6 @@ requests.rest
 *.requests.rest
 
 .eslintrc.js
+
+cypress.json
+*/cypress/videos/

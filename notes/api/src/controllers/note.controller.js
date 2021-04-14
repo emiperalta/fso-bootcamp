@@ -45,7 +45,6 @@ const addNote = async (req, res, next) => {
     const newNote = new Note({
       content,
       date: new Date(),
-      important: Math.random() < 0.5,
       user: userFromDB._id,
     });
 

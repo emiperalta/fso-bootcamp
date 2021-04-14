@@ -15,6 +15,7 @@ const LoginForm = ({
         <div>
           username
           <input
+            id='username'
             onChange={handleUsernameChange}
             placeholder='Username'
             type='text'
@@ -24,13 +25,14 @@ const LoginForm = ({
         <div>
           password
           <input
+            id='password'
             onChange={handlePasswordChange}
             placeholder='Password'
             type='password'
             value={password}
           />
         </div>
-        <button>login</button>
+        <button id='login-button'>login</button>
       </form>
     </Toggable>
   );

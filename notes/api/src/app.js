@@ -18,6 +18,11 @@ app.use('/api/notes', noteRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api', authRoutes);
 
+if (process.env.NODE_ENV === 'test') {
+  const testRoute = require('./routes/test.routes');
+  app.use('/api/testing', testRoute);
+}
+
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);
 

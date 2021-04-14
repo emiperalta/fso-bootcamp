@@ -11,7 +11,7 @@ const NoteForm = ({ createNote }) => {
     newNote &&
       createNote({
         content: newNote,
-        important: Math.random() < 0.5,
+        important: false,
       });
     newNote && noteFormRef.current.toggleVisibility();
     setNewNote('');

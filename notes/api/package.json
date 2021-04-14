@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon src/server.js",
     "start": "cross-env NODE_ENV=production node src/server.js",
+    "start:test": "cross-env NODE_ENV=test node src/server.js",
     "test": "cross-env NODE_ENV=test jest --verbose --silent tests/users.test.js",
     "test:watch": "npm run test -- --watch"
   },
