@@ -22,7 +22,14 @@ const login = async (req, res) => {
   };
 
   const token = jwt.sign(userForToken, config.SECRET, { expiresIn: 60 * 60 });
-  res.status(200).json({ token, username: userInDB.username, name: userInDB.name });
+  res
+    .status(200)
+    .json({
+      id: userInDB._id,
+      name: userInDB.name,
+      token,
+      username: userInDB.username,
+    });
 };
 
 module.exports = {

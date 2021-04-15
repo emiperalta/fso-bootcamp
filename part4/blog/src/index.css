@@ -10,3 +10,17 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+.error {
+  color: red;
+}
+
+.success {
+  color: green;
+}
+
+.blog {
+  padding: 5px;
+  margin-bottom: 10px;
+  border: 2px black solid;
+}

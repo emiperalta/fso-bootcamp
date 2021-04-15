@@ -105,9 +105,9 @@ const App = () => {
 
   return (
     <div>
-      {user ? <h2>blogs</h2> : <h2>log in to application</h2>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {message && <p style={{ color: 'green' }}>{message}</p>}
+      {user ? <h2>blogs</h2> : <h2>Login to application</h2>}
+      {error && <p className='error'>{error}</p>}
+      {message && <p className='success'>{message}</p>}
       {user ? (
         <>
           <p>

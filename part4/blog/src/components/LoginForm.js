@@ -7,6 +7,7 @@ const LoginForm = props => {
         <div>
           username
           <input
+            id='username'
             name='username'
             onChange={props.handleUsernameChange}
             placeholder='Username'
@@ -17,6 +18,7 @@ const LoginForm = props => {
         <div>
           password
           <input
+            id='password'
             name='password'
             onChange={props.handlePasswordChange}
             placeholder='Password'
