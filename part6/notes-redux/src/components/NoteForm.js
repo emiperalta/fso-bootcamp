@@ -2,14 +2,17 @@ import { useDispatch } from 'react-redux';
 
 import { createNote } from '../reducers/noteReducer';
 
+import { createNew } from '../services/notes';
+
 const NoteForm = () => {
   const dispatch = useDispatch();
 
-  const addNote = e => {
+  const addNote = async e => {
     e.preventDefault();
     const content = e.target.note.value;
     e.target.note.value = '';
-    dispatch(createNote(content));
+    const newNote = await createNew(content);
+    dispatch(createNote(newNote));
   };
 
   return (
