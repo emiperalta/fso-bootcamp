@@ -9,6 +9,7 @@ import Filter from './Filter';
 const AnecdoteList = () => {
   const dispatch = useDispatch();
   const anecdotes = useSelector(state => state.anecdotes);
+  console.log({ anecdotes });
   const filter = useSelector(state => state.filter);
 
   const vote = id => {
