@@ -16,3 +16,14 @@ export const createNew = async content => {
   });
   return response.json();
 };
+
+export const voteAnecdote = async (id, votedAnecdote) => {
+  const response = await fetch(`${baseUrl}/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(votedAnecdote),
+  });
+  return response.json();
+};

@@ -9,14 +9,13 @@ import Filter from './Filter';
 const AnecdoteList = () => {
   const dispatch = useDispatch();
   const anecdotes = useSelector(state => state.anecdotes);
-  console.log({ anecdotes });
   const filter = useSelector(state => state.filter);
 
   const vote = id => {
-    const anecdote = anecdotes.find(a => a.id === id);
-    dispatch(voteUp(id));
-    dispatch(showNotification(`you voted "${anecdote.content}"`));
-    setTimeout(() => dispatch(showNotification('')), 5000);
+    let anecdote = anecdotes.find(a => a.id === id);
+    anecdote = { ...anecdote, votes: anecdote.votes + 1 };
+    dispatch(voteUp(id, anecdote));
+    dispatch(showNotification(`you voted "${anecdote.content}"`, 5));
   };
 
   return (
