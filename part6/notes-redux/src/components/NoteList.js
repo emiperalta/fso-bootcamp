@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 
-import { toggleImportanceOf } from '../reducers/noteReducer';
+import { toggleImportanceOf } from '../reducers/note.reducer';
 
 import Note from './Note';
 

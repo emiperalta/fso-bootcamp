@@ -2,8 +2,8 @@ import { applyMiddleware, createStore, combineReducers } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
-import noteReducer from '../reducers/noteReducer';
-import filterReducer from '../reducers/filterReducer';
+import noteReducer from '../reducers/note.reducer';
+import filterReducer from '../reducers/filter.reducer';
 
 const reducer = combineReducers({
   notes: noteReducer,
