@@ -1,4 +1,5 @@
 import { useHistory } from 'react-router-dom';
+import { Button, Form } from 'react-bootstrap';
 
 const LoginForm = props => {
   const history = useHistory();
@@ -12,15 +13,15 @@ const LoginForm = props => {
   return (
     <div>
       <h3>login</h3>
-      <form onSubmit={handleSubmit}>
-        <div>
-          username: <input name='username' type='text' />
-        </div>
-        <div>
-          password: <input name='password' type='password' />
-        </div>
-        <button>login</button>
-      </form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group>
+          <Form.Label>username:</Form.Label>
+          <Form.Control name='username' type='text' />
+          <Form.Label>password:</Form.Label>
+          <Form.Control name='password' type='password' />
+        </Form.Group>
+        <Button type='submit'>login</Button>
+      </Form>
     </div>
   );
 };

@@ -3,17 +3,32 @@
     {
       "id": 1,
       "content": "HTML is easy",
-      "important": false
+      "important": false,
+      "user": "emidev"
     },
     {
       "id": 2,
       "content": "Browser can execute only Javascript",
-      "important": true
+      "important": true,
+      "user": "Mr. Test"
     },
     {
       "id": 3,
       "content": "Most important methods of HTTP-protocol are GET and POST",
-      "important": true
+      "important": true,
+      "user": "emidev"
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "username": "emidev",
+      "password": "emidev"
+    },
+    {
+      "id": 2,
+      "username": "Mr. Test",
+      "password": "test"
     }
   ]
 }
