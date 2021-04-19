@@ -1,0 +1,19 @@
+{
+  "notes": [
+    {
+      "content": "custom hook ftw",
+      "id": 1
+    },
+    {
+      "content": "testing custom hooks",
+      "id": 2
+    }
+  ],
+  "persons": [
+    {
+      "name": "emidev",
+      "number": "040-5483923",
+      "id": 1
+    }
+  ]
+}
