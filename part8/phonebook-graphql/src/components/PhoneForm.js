@@ -11,7 +11,6 @@ const PhoneForm = ({ setError }) => {
 
   useEffect(() => {
     if (result.data && result.data.editNumber === null) setError('person not found');
-    console.log('a');
   }, [result.data]); //eslint-disable-line
 
   const handleSubmit = e => {
