@@ -12,11 +12,11 @@
     "web-vitals": "^1.1.1"
   },
   "scripts": {
-    "start": "react-scripts start",
     "build": "react-scripts build",
     "cypress:open": "cypress open",
     "eject": "react-scripts eject",
     "server": "json-server -p3001 --watch db.json",
+    "start": "react-scripts start",
     "test": "react-scripts test tests/noteReducer.test",
     "test:e2e": "cypress run"
   },
