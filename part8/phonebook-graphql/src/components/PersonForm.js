@@ -9,14 +9,26 @@ const PersonForm = ({ setError }) => {
   const [street, setStreet] = useState('');
   const [city, setCity] = useState('');
 
-  const [createPerson] = useMutation(CREATE_PERSON, {
-    refetchQueries: [{ query: ALL_PERSONS }],
+  const [createPerson, result] = useMutation(CREATE_PERSON, {
     onError: error => setError(error.graphQLErrors[0].message),
+    update: (store, response) => {
+      const dataInStore = store.readQuery({ query: ALL_PERSONS });
+      const newPerson = response.data.addPerson;
+      store.writeQuery({
+        query: ALL_PERSONS,
+        data: {
+          ...dataInStore,
+          allPersons: [...dataInStore.allPersons, newPerson],
+        },
+      });
+    },
   });
 
   const handleSubmit = e => {
     e.preventDefault();
-    createPerson({ variables: { name, phone, street, city } });
+    createPerson({
+      variables: { name, street, city, phone: phone.length > 0 ? phone : null },
+    });
     setName('');
     setPhone('');
     setStreet('');
@@ -25,6 +37,7 @@ const PersonForm = ({ setError }) => {
 
   return (
     <div>
+      {result.loading && <p style={{ color: 'green' }}>creating...</p>}
       <h2>create new</h2>
       <form onSubmit={handleSubmit}>
         <div>

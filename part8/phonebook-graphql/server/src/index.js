@@ -76,6 +76,7 @@ const resolvers = {
         await person.save();
         currentUser.friends = currentUser.friends.concat(person);
         await currentUser.save();
+        return person;
       } catch (error) {
         throw new UserInputError(error.message, { invalidArgs: args });
       }

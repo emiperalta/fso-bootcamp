@@ -5,6 +5,7 @@ import { FIND_PERSON } from '../utils/queries';
 
 const PersonList = ({ persons }) => {
   const [person, setPerson] = useState(null);
+
   const [getPerson, result] = useLazyQuery(FIND_PERSON);
 
   useEffect(() => {
