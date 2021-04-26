@@ -5,7 +5,7 @@ import BornForm from './BornForm';
 
 import { GET_AUTHORS } from '../utils/queries';
 
-const Authors = props => {
+const Authors = ({ show, loggedUser }) => {
   const [authors, setAuthors] = useState([]);
   const [error, setError] = useState('');
 
@@ -13,7 +13,7 @@ const Authors = props => {
 
   useEffect(() => data && setAuthors(data.allAuthors), [data]);
 
-  if (!props.show) {
+  if (!show) {
     return null;
   }
 
@@ -41,7 +41,7 @@ const Authors = props => {
               ))}
             </tbody>
           </table>
-          <BornForm setError={setError} authors={authors} />
+          {loggedUser && <BornForm setError={setError} authors={authors} />}
         </div>
       )}
     </div>

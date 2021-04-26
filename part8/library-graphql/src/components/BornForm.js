@@ -24,7 +24,7 @@ const BornForm = ({ authors, setError }) => {
       setError('author not found');
       setTimeout(() => setError(''), 4000);
     }
-  }, [result.data]);
+  }, [result.data]); //eslint-disable-line
 
   const handleSubmit = e => {
     e.preventDefault();

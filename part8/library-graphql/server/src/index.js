@@ -75,7 +75,7 @@ const resolvers = {
         return await Book.find({ author: args.author }).populate('author');
       }
       if (args.genre) {
-        return await Book.find({ genre: args.genre });
+        return await Book.find({ genres: { $in: args.genre } }).populate('author');
       }
       const books = await Book.find({}).populate('author');
       return books;
@@ -120,7 +120,8 @@ const resolvers = {
       });
 
       try {
-        return await book.save();
+        const savedBook = await book.save();
+        return await Book.findOne({ title: savedBook.title }).populate('author');
       } catch (error) {
         throw new UserInputError(error.message, { invalidArgs: args });
       }
@@ -135,9 +136,9 @@ const resolvers = {
     },
     login: async (root, args) => {
       const userExists = await User.findOne({ username: args.username });
-      if (!userExists || args.password !== 'secret')
-        throw new UserInputError('User not found', { invalidArsg: args });
-
+      if (!userExists || args.password !== 'secret') {
+        throw new UserInputError('wrong credentials');
+      }
       const userForToken = {
         user: userExists.username,
         id: userExists._id,
@@ -153,7 +154,7 @@ const server = new ApolloServer({
   resolvers,
   context: async context => {
     const authHeader = context.req.headers.authorization || null;
-    if (authHeader) {
+    if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.substring(7);
       const decodedToken = jwt.verify(token, SECRET);
       const currentUser = await User.findById(decodedToken.id);

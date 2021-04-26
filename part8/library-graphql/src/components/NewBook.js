@@ -3,26 +3,26 @@ import { useMutation } from '@apollo/client';
 
 import { CREATE_BOOK, GET_AUTHORS, GET_BOOKS } from '../utils/queries';
 
-const NewBook = props => {
+const NewBook = ({ setError, setPage, show }) => {
   const [title, setTitle] = useState('');
   const [author, setAuhtor] = useState('');
   const [published, setPublished] = useState(0);
   const [genre, setGenre] = useState('');
   const [genres, setGenres] = useState([]);
 
-  const [addBook] = useMutation(CREATE_BOOK, {
+  const [addBook, { loading }] = useMutation(CREATE_BOOK, {
     refetchQueries: [{ query: GET_AUTHORS }, { query: GET_BOOKS }],
+    onError: error => setError(error.graphQLErrors[0].message),
+    onCompleted: () => setPage('books'),
   });
 
-  if (!props.show) {
+  if (!show) {
     return null;
   }
 
   const submit = async event => {
     event.preventDefault();
-
     addBook({ variables: { title, author, published, genres } });
-
     setTitle('');
     setPublished(0);
     setAuhtor('');
@@ -37,6 +37,7 @@ const NewBook = props => {
 
   return (
     <div>
+      <h2>create new book</h2>
       <form onSubmit={submit}>
         <div>
           title
@@ -63,6 +64,7 @@ const NewBook = props => {
         <div>genres: {genres.join(' ')}</div>
         <button type='submit'>create book</button>
       </form>
+      {loading && <div style={{ color: 'green' }}>creating...</div>}
     </div>
   );
 };
