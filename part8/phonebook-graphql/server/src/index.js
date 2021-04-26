@@ -4,6 +4,7 @@ const {
   AuthenticationError,
   gql,
   UserInputError,
+  PubSub,
 } = require('apollo-server');
 const jwt = require('jsonwebtoken');
 
@@ -11,6 +12,7 @@ const Person = require('./models/Person');
 const User = require('./models/User');
 
 const SECRET = process.env.SECRET;
+const pubsub = new PubSub();
 
 const typeDefs = gql`
   type Address {
@@ -49,6 +51,10 @@ const typeDefs = gql`
     createUser(username: String!): User
     login(username: String!, password: String!): Token
   }
+
+  type Subscription {
+    personAdded: Person!
+  }
 `;
 
 const resolvers = {
@@ -76,10 +82,12 @@ const resolvers = {
         await person.save();
         currentUser.friends = currentUser.friends.concat(person);
         await currentUser.save();
-        return person;
       } catch (error) {
         throw new UserInputError(error.message, { invalidArgs: args });
       }
+
+      pubsub.publish('PERSON_ADDED', { personAdded: person });
+      return person;
     },
     addAsFriend: async (root, args, { currentUser }) => {
       if (!currentUser) throw new AuthenticationError('not authenticated');
@@ -126,6 +134,11 @@ const resolvers = {
       return { value: token };
     },
   },
+  Subscription: {
+    personAdded: {
+      subscribe: () => pubsub.asyncIterator(['PERSON_ADDED']),
+    },
+  },
 };
 
 const server = new ApolloServer({
@@ -141,4 +154,7 @@ const server = new ApolloServer({
   },
 });
 
-server.listen().then(({ url }) => console.log(`Server ready at ${url}graphql`));
+server.listen().then(({ url, subscriptionsUrl }) => {
+  console.log(`Server ready at ${url}`);
+  console.log(`Subscriptions ready at ${subscriptionsUrl}`);
+});

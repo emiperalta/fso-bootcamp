@@ -16,6 +16,8 @@ const PhoneForm = ({ setError }) => {
   const handleSubmit = e => {
     e.preventDefault();
     changeNumber({ variables: { name, phone } });
+    setName('');
+    setPhone('');
   };
 
   return (

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useApolloClient, useQuery } from '@apollo/client';
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client';
 
-import { ALL_PERSONS } from './utils/queries';
+import { ALL_PERSONS, PERSON_ADDED } from './utils/queries';
 
 import Notification from './components/Notification';
 import PersonList from './components/PersonList';
@@ -15,6 +15,12 @@ const App = () => {
 
   const { data, loading } = useQuery(ALL_PERSONS);
   const client = useApolloClient();
+  useSubscription(PERSON_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedPerson = subscriptionData.data.personAdded;
+      notify(`${addedPerson.name} was added`);
+    },
+  });
 
   useEffect(() => {
     const token = localStorage.getItem('loggedUserToken');
