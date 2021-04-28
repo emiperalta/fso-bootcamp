@@ -2,8 +2,10 @@
 
 # dependencies
 node_modules
+.expo
 /.pnp
 .pnp.js
+
 
 # testing
 coverage
@@ -20,6 +22,7 @@ build
 .env.production.local
 
 npm-debug.log*
+npm-debug.*
 yarn-debug.log*
 yarn-error.log*
 
@@ -30,3 +33,11 @@ requests.rest
 
 cypress.json
 */cypress/videos/
+
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build
