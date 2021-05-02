@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
   section: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    paddingTop: 8,
   },
   logo: {
     width: 50,

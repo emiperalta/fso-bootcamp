@@ -19,6 +19,9 @@ const styles = StyleSheet.create({
   colorPrimary: {
     color: theme.colors.primary,
   },
+  errorColor: {
+    color: theme.colors.error,
+  },
   primaryTextBg: {
     color: theme.colors.ligth,
     backgroundColor: theme.background.blue,
@@ -50,6 +53,7 @@ const Text = ({
     text === 'light' && styles.colorTextLigth,
     color === 'textSecondary' && styles.colorTextSecondary,
     color === 'primary' && styles.colorPrimary,
+    color === 'error' && styles.errorColor,
     primaryTextBg === 'primary' && styles.primaryTextBg,
     fontSize === 'subheading' && styles.fontSizeSubheading,
     fontSize === 'head' && styles.fontSizeHead,

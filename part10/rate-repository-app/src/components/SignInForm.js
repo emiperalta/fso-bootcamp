@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, StyleSheet, TextInput, View } from 'react-native';
 
+import Text from './Text';
+
 import theme from '../theme';
 
 const styles = StyleSheet.create({
@@ -16,7 +18,15 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     padding: theme.paddings.high,
     borderRadius: theme.borders.normal,
-    marginBottom: theme.margins.high,
+  },
+  errorInput: {
+    height: 50,
+    fontSize: theme.fontSizes.subheading,
+    borderColor: theme.colors.error,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    padding: theme.paddings.high,
+    borderRadius: theme.borders.normal,
   },
   button: {
     backgroundColor: theme.background.blue,
@@ -24,25 +34,39 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  errorMessage: {
+    color: theme.colors.error,
+    marginBottom: theme.margins.normal,
+  },
 });
 
-const SignInForm = ({ handleChange, handleSubmit, values }) => {
+const SignInForm = props => {
   return (
     <View style={styles.container}>
       <TextInput
-        onChangeText={handleChange('username')}
+        onBlur={props.handleBlur('username')}
+        onChangeText={props.handleChange('username')}
         placeholder='Username'
-        style={styles.input}
-        value={values.username}
+        style={props.errors.username ? styles.errorInput : styles.input}
+        value={props.values.username}
       />
+      <Text style={styles.errorMessage}>
+        {props.touched.username && props.errors.username}
+      </Text>
+
       <TextInput
-        onChangeText={handleChange('password')}
+        onBlur={props.handleBlur('password')}
+        onChangeText={props.handleChange('password')}
         placeholder='Password'
-        style={styles.input}
+        style={props.errors.password ? styles.errorInput : styles.input}
         secureTextEntry={true}
-        value={values.password}
+        value={props.values.password}
       />
-      <Button onPress={handleSubmit} style={styles.button} title='Sign in' />
+      <Text style={styles.errorMessage}>
+        {props.touched.password && props.errors.password}
+      </Text>
+
+      <Button onPress={props.handleSubmit} title='Sign in' />
     </View>
   );
 };
