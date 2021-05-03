@@ -41,3 +41,6 @@ cypress.json
 *.mobileprovision
 *.orig.*
 web-build
+
+**/utils/config.js
+**/part10/rate-repository-api
